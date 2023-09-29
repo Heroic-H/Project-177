@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>hangman!!!</title>
+        <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap"/>
+        <script>
+            let words=[
+                {
+                    "inputs":5,
+                    "category":"Sports",
+                    "word":"Chess"
+                },
+                {
+                    "inputs":6,
+                    "category":"European Country Name",
+                    "word":"France"
+                }
+            ]
+            $(document).ready(function () {
+                hangman()
+            })
+            function hangman(){
+                var gameOver=false
+                let randomWord=words[Math.floor(Math.random()*words.length)]
+                $("#blanks").empty()
+                for (let i=0;i<randomWord.inputs;i++) {
+                    let input_html=`<span class="fill_blanks" id="input_${i}">_</span>`
+                    $("#blanks").append(input_html)
+                }
+                $("#hint").html(randomWord.category)
+                $(".clickable").click(function(){
+                    var correctGuess=false
+                    let id=$(this).attr("id")
+                    var life=parseInt($("#life").text())
+                    for(var i=0;1<randomWord.word.length;i++){
+                        if(randomWord.word.charAt(i).toLowerCase()==id){
+                            if(life>0&&($(".fill_blanks").eq(i).html()=="_"||$(".fill_blanks").eq(i).html()==id)){
+                                $(".fill_blanks").eq(i).html(id)
+                                correctGuess=true
+                                if($("#blanks").text()==randomWord.word.toLowerCase()){
+                                    $("#result").text("You Win!!")
+                                    correctGuess=true
+                                    gameOver=true
+                                }
+                            }
+                        }
+                    }
+                    if(life>0&&correctGuess!=true&&gameOver!=true) {           
+                        life=life-1
+                        $("#life").text(life)
+                    }
+                    else if(life==0) {
+                        $("#result").text("You Lost!!")
+                    }
+                })
+            }
+            $(document).ready(function(){
+                getTemplates()
+            })
+            function getTemplates(){
+                $.ajax({
+                    url:"./get-template",
+                    type:"get",
+                    success:function(result){fillBlanks(result.word)},
+                    error:function(result){alert(result.responseJSON.message)}
+                })
+            }
+        </script>
+        <style>
+            body {background-image:url('./assets/bg.jpg');font-family:'Pangolin',cursive;font-size:large}
+            .display_inline {display:inline;padding:0.5em}
+            div {margin-top:20px;margin-bottom:10px;margin-right:150px;margin-left:300px}
+        </style>
+    </head>
+    <body>
+        <div class="container pt-3">
+            <div class="row text-centre">
+                <div class="col-sm-4 text-center">
+                    <h1>HANGMAN</h1>
+                    <p>click on the letters to guess a word</p>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm4 text-center">
+                    <button type="button" id="a" class="btn btn-outline-primary clickable">a</button>
+                    <button type="button" id="b" class="btn btn-outline-primary clickable">b</button>
+                    <button type="button" id="c" class="btn btn-outline-primary clickable">c</button>
+                    <button type="button" id="d" class="btn btn-outline-primary clickable">d</button>
+                    <button type="button" id="e" class="btn btn-outline-primary clickable">e</button>
+                    <button type="button" id="f" class="btn btn-outline-primary clickable">f</button>
+                    <button type="button" id="g" class="btn btn-outline-primary clickable">g</button>
+                    <button type="button" id="h" class="btn btn-outline-primary clickable">h</button>
+                    <button type="button" id="i" class="btn btn-outline-primary clickable">i</button>
+                    <button type="button" id="j" class="btn btn-outline-primary clickable">j</button>
+                    <button type="button" id="k" class="btn btn-outline-primary clickable">k</button>
+                    <button type="button" id="l" class="btn btn-outline-primary clickable">l</button>
+                    <button type="button" id="m" class="btn btn-outline-primary clickable">m</button>
+                    <button type="button" id="n" class="btn btn-outline-primary clickable">n</button>
+                    <button type="button" id="o" class="btn btn-outline-primary clickable">o</button>
+                    <button type="button" id="p" class="btn btn-outline-primary clickable">p</button>
+                    <button type="button" id="q" class="btn btn-outline-primary clickable">q</button>
+                    <button type="button" id="r" class="btn btn-outline-primary clickable">r</button>
+                    <button type="button" id="s" class="btn btn-outline-primary clickable">s</button>
+                    <button type="button" id="t" class="btn btn-outline-primary clickable">t</button>
+                    <button type="button" id="u" class="btn btn-outline-primary clickable">u</button>
+                    <button type="button" id="v" class="btn btn-outline-primary clickable">v</button>
+                    <button type="button" id="w" class="btn btn-outline-primary clickable">w</button>
+                    <button type="button" id="x" class="btn btn-outline-primary clickable">x</button>
+                    <button type="button" id="y" class="btn btn-outline-primary clickable">y</button>
+                    <button type="button" id="z" class="btn btn-outline-primary clickable">z</button>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4-text-center">
+                    <span>Remaining Life:</span>
+                    <span id="life">5</span>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4-text-center">
+                    <span id="hint">Hint: Category is</span>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4-text-center">
+                    <p id="blanks"></p>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4 text-center">
+                    <p id="result"></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
